@@ -21,6 +21,8 @@ This repository will include postman sample collections to re-use them easily fo
 - braintreeAuth
 - braintreeCCToken
 
+![M2 postman variables](/assets/images/m2-postman-variables.png)
+
 ### API calls
 
 1. generateCustomerToken
@@ -36,5 +38,9 @@ This repository will include postman sample collections to re-use them easily fo
 11. TokenizeCreditCard Braintree
 12. setPaymentMethodOnCart
 13. placeOrder
+
+Collection run result:
+
+![M2 checkout process](/assets/images/m2-logged-in-customer-place-order.png)
 
 Cheers! 😉
