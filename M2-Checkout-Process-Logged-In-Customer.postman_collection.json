@@ -1,0 +1,759 @@
+{
+	"info": {
+		"_postman_id": "35d0e955-2e21-4b60-ae4e-5a464934a7a0",
+		"name": "M2-Checkout-Process-Logged-In-Customer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "928971"
+	},
+	"item": [
+		{
+			"name": "generateCustomerToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.data.generateCustomerToken.token);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation ($sampleCustomerEmail: String!, $sampleCustomerPassword: String!) {\n  generateCustomerToken(\n    email: $sampleCustomerEmail\n    password: $sampleCustomerPassword\n  ) {\n    token\n  }\n}",
+						"variables": "{\n    \"sampleCustomerEmail\": \"{{sampleCustomerEmail}}\",\n    \"sampleCustomerPassword\": \"{{sampleCustomerPassword}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createEmptyCart - Registered User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"cartId\", jsonData.data.createEmptyCart);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  createEmptyCart\n}\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product - Retrieve variant uid values",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"sampleSKU\", jsonData.data.products.items[0].sku);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query($searchKeyword : String) {\n  products(search: $searchKeyword, pageSize: 2) {\n    total_count\n    items {\n      name\n      sku\n      price_range {\n        minimum_price {\n          regular_price {\n            value\n            currency\n          }\n        }\n      }\n    }\n    page_info {\n      page_size\n      current_page\n    }\n  }\n}\n",
+						"variables": "{\n    \"searchKeyword\": \"Shirt\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product - Retrieve variant uid values - Configurable",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"sampleVariant\", jsonData.data.products.items[0].variants[0].attributes[0].uid);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query($sampleSKU: String) {\n  products(filter: {sku: {eq: $sampleSKU}}) {\n    items {\n      sku\n      ... on ConfigurableProduct {\n        variants {\n          attributes {\n            uid\n            label\n            code\n          }\n        }\n      }\n    }\n  }\n}\n",
+						"variables": "{\n    \"sampleSKU\" : \"{{sampleSKU}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addProductsToCart - Registered User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addProductsToCart($cartId: String!, $sampleSKU: String!, $sampleVariant: ID!) {\n  addProductsToCart(\n    cartId: $cartId\n    cartItems: [\n      {\n        quantity: 1\n        sku: $sampleSKU\n        selected_options: [$sampleVariant]\n      }\n    ]\n  ) {\n    cart {\n      items {\n        id\n        product {\n          name\n          sku\n        }\n        quantity\n      }\n    }\n    user_errors {\n      code\n      message\n    }\n  }\n}\n",
+						"variables": "{\n    \"cartId\": \"{{cartId}}\",\n    \"sampleSKU\": \"{{sampleSKU}}\",\n    \"sampleVariant\": \"{{sampleVariant}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "setShippingAddress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation setShippingAddress($cartId: String!, $firstname: String!, $lastname: String!, $company: String, $autocomplete_line: String, $street: [String]!, $city: String!, $country_id: String!, $region_code: String, $postcode: String, $telephone: String!, $authorityToLeave: UnattendedDeliveryOptionEnum, $note: String) {\nsetShippingAddressesOnCart(input: {cart_id: $cartId, shipping_addresses: [{address: {firstname: $firstname, lastname: $lastname, company: $company, autocomplete_line: $autocomplete_line, street: $street, city: $city, region: $region_code, postcode: $postcode, telephone: $telephone, country_code: $country_id, save_in_address_book: false, unattended_delivery_option: $authorityToLeave}, customer_notes: $note}]}) {\ncart {\n...CartTotalRelatedFields\nid\nshipping_addresses {\n...ShippingAddress\n__typename\n}\n__typename\n}\n__typename\n}\n}\n\nfragment CartTotalRelatedFields on Cart {\napplied_gift_cards {\napplied_balance {\nvalue\n__typename\n}\n__typename\n}\navailable_payment_methods {\ncode\ntitle\n__typename\n}\nfree_shipping {\ncode\nmessage\npercentage\nshipping_amount\nthreshold\nis_applicable\nis_eligible\nis_shipping_amount_discounted\n__typename\n}\nprices {\ndonation {\namount {\nvalue\n__typename\n}\n__typename\n}\ngrand_total {\nvalue\n__typename\n}\nsubtotal_including_tax {\nvalue\n__typename\n}\ndiscount {\namount {\nvalue\n__typename\n}\nlabel\n__typename\n}\ndiscounts {\namount {\nvalue\n__typename\n}\nlabel\n__typename\n}\noriginal_total {\nvalue\n__typename\n}\n__typename\n}\nshipping_addresses {\navailable_shipping_methods {\navailable\ncarrier_code\ncarrier_title\nerror_message\nmethod_code\nmethod_title\nprice_incl_tax {\nvalue\n__typename\n}\n__typename\n}\nselected_shipping_method {\namount {\nvalue\n__typename\n}\nmethod_code\nmethod_title\n__typename\n}\n__typename\n}\nunsupported_payment_methods {\ncode\ntitle\n__typename\n}\n__typename\n}\n\nfragment ShippingAddress on ShippingCartAddress {\nautocomplete_line\ncity\ncompany\ncountry {\ncode\n__typename\n}\ncustomer_notes\nfirstname\nlastname\npostcode\nregion {\ncode\nlabel\nregion_id\n__typename\n}\nstreet\ntelephone\nunattended_delivery_option\n__typename\n}\n",
+						"variables": "{\n  \"cartId\": \"{{cartId}}\",\n  \"firstname\": \"test\",\n  \"lastname\": \"test\",\n  \"company\": \"\",\n  \"autocomplete_line\": \"UNIT 10 16 KYLE ST, GLENSIDE, SOUTH AUSTRALIA, 5065\",\n  \"street\": [\n    \"16 KYLE ST\",\n    \"UNIT 10\"\n  ],\n  \"city\": \"GLENSIDE\",\n  \"country_id\": \"AU\",\n  \"postcode\": \"5065\",\n  \"telephone\": \"0479999999\",\n  \"region\": \"South Australia\",\n  \"region_id\": \"1718\",\n  \"regionCode\": \"SA\",\n  \"saveInAddressBook\": \"0\",\n  \"note\": \"\",\n  \"region_code\": \"SA\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "setBillingAddressOnCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation ($cartId: String!) {\n  setBillingAddressOnCart(\n    input: {\n      cart_id: $cartId,\n      billing_address: {\n        same_as_shipping: true\n      }\n    }\n  ) {\n    cart {\n      billing_address {\n        firstname\n        lastname\n        company\n        street\n        city\n        region{\n          code\n          label\n        }\n        postcode\n        telephone\n        country{\n          code\n          label\n        }\n      }\n    }\n  }\n}\n",
+						"variables": "{\n  \"cartId\": \"{{cartId}}\",\n  \"firstname\": \"test\",\n  \"lastname\": \"test\",\n  \"company\": \"\",\n  \"autocomplete_line\": \"UNIT 10 16 KYLE ST, GLENSIDE, SOUTH AUSTRALIA, 5065\",\n  \"street\": [\n    \"16 KYLE ST\",\n    \"UNIT 10\"\n  ],\n  \"city\": \"GLENSIDE\",\n  \"countryCode\": \"AU\",\n  \"postcode\": \"5065\",\n  \"telephone\": \"0479999999\",\n  \"region\": \"South Australia\",\n  \"regionId\": \"1718\",\n  \"regionCode\": \"SA\",\n  \"saveInAddressBook\": \"0\",\n  \"note\": \"\",\n  \"region_code\": \"SA\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "setShippingMethods",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation setShippingMethods($cartId: String!, $carrierCode: String!, $methodCode: String!) {\n  setShippingMethodsOnCart(input: {cart_id: $cartId, shipping_methods: [{carrier_code: $carrierCode, method_code: $methodCode}]}) {\n    cart {\n      ...CartTotalRelatedFields\n      id\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment CartTotalRelatedFields on Cart {\n  applied_gift_cards {\n    applied_balance {\n      value\n      __typename\n    }\n    __typename\n  }\n  available_payment_methods {\n    code\n    title\n    __typename\n  }\n  free_shipping {\n    code\n    message\n    percentage\n    shipping_amount\n    threshold\n    is_applicable\n    is_eligible\n    is_shipping_amount_discounted\n    __typename\n  }\n  prices {\n    donation {\n      amount {\n        value\n        __typename\n      }\n      __typename\n    }\n    grand_total {\n      value\n      __typename\n    }\n    subtotal_including_tax {\n      value\n      __typename\n    }\n    discount {\n      amount {\n        value\n        __typename\n      }\n      label\n      __typename\n    }\n    discounts {\n      amount {\n        value\n        __typename\n      }\n      label\n      __typename\n    }\n    original_total {\n      value\n      __typename\n    }\n    __typename\n  }\n  shipping_addresses {\n    available_shipping_methods {\n      available\n      carrier_code\n      carrier_title\n      error_message\n      method_code\n      method_title\n      price_incl_tax {\n        value\n        __typename\n      }\n      __typename\n    }\n    selected_shipping_method {\n      amount {\n        value\n        __typename\n      }\n      method_code\n      method_title\n      __typename\n    }\n    __typename\n  }\n  unsupported_payment_methods {\n    code\n    title\n    __typename\n  }\n  __typename\n}\n",
+						"variables": "{\n  \"carrierCode\": \"standard\",\n  \"cartId\": \"{{cartId}}\",\n  \"methodCode\": \"standard\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check Available Payment Methods",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query ($cartId: String!) {\n  cart(cart_id: $cartId) {\n    available_payment_methods {\n      code\n      title\n    }\n  }\n}\n",
+						"variables": "{\n  \"cartId\": \"{{cartId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check Auth TokenizeCreditCard Braintree",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic {{braintreeAuth}}",
+						"type": "text"
+					},
+					{
+						"key": "Braintree-Version",
+						"value": "2018-05-10",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  ping\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://payments.sandbox.braintree-api.com/graphql",
+					"protocol": "https",
+					"host": [
+						"payments",
+						"sandbox",
+						"braintree-api",
+						"com"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TokenizeCreditCard Braintree",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"braintreeCCToken\", jsonData.data.tokenizeCreditCard.token);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic {{braintreeAuth}}",
+						"type": "text"
+					},
+					{
+						"key": "Braintree-Version",
+						"value": "2018-05-10",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation TokenizeCreditCard($input: TokenizeCreditCardInput!) {   \n    tokenizeCreditCard(input: $input) {     \n        token     \n        creditCard {       \n            bin       \n            brandCode       \n            last4       \n            cardholderName       \n            expirationMonth      \n            expirationYear      \n            binData {         \n                prepaid         \n                healthcare         \n                debit         \n                durbinRegulated         \n                commercial         \n                payroll         \n                issuingBank         \n                countryOfIssuance         \n                productId       \n            }     \n        }   \n    }\n}",
+						"variables": "{\n    \"input\": {\n        \"creditCard\": {\n            \"number\":\"4444333322221111\",\n            \"expirationMonth\":\"02\",\n            \"expirationYear\":\"2025\",\n            \"cvv\":\"123\"\n        },\n        \"options\":{\n            \"validate\":false\n        }\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "https://payments.sandbox.braintree-api.com/graphql",
+					"protocol": "https",
+					"host": [
+						"payments",
+						"sandbox",
+						"braintree-api",
+						"com"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "setPaymentMethodOnCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation ($cartId: String!, $paymentMethod: String!, $paymentNonce: String!) {\n  setPaymentMethodOnCart(\n    input: {\n      cart_id: $cartId\n      payment_method: {\n          code: $paymentMethod\n          braintree: {\n            payment_method_nonce: $paymentNonce\n            is_active_payment_token_enabler: false\n          }\n      }\n    }\n  ) {\n    cart {\n      selected_payment_method {\n        code\n        title\n      }\n    }\n  }\n}\n",
+						"variables": "{\n  \"cartId\": \"{{cartId}}\",\n  \"paymentMethod\": \"{{samplePaymentMethod}}\",\n  \"paymentNonce\": \"{{braintreeCCToken}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "placeOrder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Validated response\", function () {",
+							"    if (jsonData.errors) {",
+							"        pm.expect.fail(\"Found errors in the response\")",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "XDEBUG_SESSION=PHPSTORM"
+					},
+					{
+						"key": "Store",
+						"type": "text",
+						"value": "{{storeCode}}"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation ($cartId: String!) {\n  placeOrder(\n    input: {\n      cart_id: $cartId\n    }\n  ) {\n    order {\n      order_number\n    }\n  }\n}\n",
+						"variables": "{\n  \"cartId\": \"{{cartId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/graphql",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
