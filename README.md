@@ -39,7 +39,7 @@ This repository will include postman sample collections to re-use them easily fo
 12. setPaymentMethodOnCart
 13. placeOrder
 
-Collection run result:
+Import the collection and run to see the result:
 
 ![M2 checkout process](/assets/images/m2-logged-in-customer-place-order.png)
 
