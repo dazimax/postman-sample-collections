@@ -1,7 +1,27 @@
 # postman sample collections
 This repository will include postman sample collections to re-use them easily for anyone.
 
-## Collection - Magento 2 checkout process with logged-in customer
+## collection - Magento 2 checkout process with logged-in customer
+
+### local variables
+
+- domain
+- adminusername
+- adminpassword
+- token
+- cartId
+- sampleSKU
+- sampleVariant
+- storeCode
+- sampleCustomerEmail
+- sampleCustomerPassword
+- createBraintreeClientToken
+- samplePaymentMethod
+- createBraintreeClientToken
+- braintreeAuth
+- braintreeCCToken
+
+### API calls
 
 1. generateCustomerToken
 2. createEmptyCart - Registered User
